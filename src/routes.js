@@ -1,38 +1,49 @@
-import Router from "express";
-import multer from "multer";
-import multerConfig from "./config/multer";
+import { Router } from 'express';
 
-import UserController from "./app/controllers/UserController";
-import SessionController from "./app/controllers/SessionController";
-import FileController from "./app/controllers/ProviderController";
-import ProviderController from "./app/controllers/ProviderController";
-import ScheduleController from "./app/controllers/ScheduleController";
-import NotificationController from "./app/controllers/NotificationContorller";
+import multer from 'multer';
+import multerConfig from './config/multer';
 
-import authMiddleware from "./app/middlewares/auth";
+import UserController from './app/controllers/UserController';
+import ProviderController from './app/controllers/ProviderController';
+import SessionController from './app/controllers/SessionController';
+import FileController from './app/controllers/FileController';
+import AppointmentController from './app/controllers/AppointmentController';
+import SheduleController from './app/controllers/SheduleController';
+import NotificationController from './app/controllers/NotificationController';
+
+import authMiddlewares from './app/middlewares/auth';
+import AvailableController from './app/controllers/AvailableController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
-routes.post("/users", UserController.store);
-routes.post("/sessions", SessionController.store);
+// sessions
+routes.post('/sessions', SessionController.store);
+routes.post('/users', UserController.store);
 
-routes.use(authMiddleware); //só vale pras rotas daqui pra frente
+// Router Authorization
+routes.use(authMiddlewares);
 
-routes.put("/users", UserController.update);
+// User
+routes.put('/users', UserController.update);
 
-routes.get("providers", ProviderController.index);
-routes.get("providers/:providerId/available", AvailableController.index);
+// Providers
+routes.get('/providers', ProviderController.index);
+routes.get('/providers/:providerId/available', AvailableController.index);
 
-routes.get('/appointments', AppointmentController.index);
+// Calendario
 routes.post('/appointments', AppointmentController.store);
-routes.delete('/appointments/:id', AppointmentController.store)
+routes.get('/appointments', AppointmentController.index);
+routes.delete('/appointments/:id', AppointmentController.delete);
 
-routes.get('/schedule', ScheduleController.index)
+// Calendario do prestador
+routes.get('/schedule', SheduleController.index);
 
-routes.get('/notifications', NotificationController.index)
-routes.get('/notifications/:id', NotificationController.update)
+// Foto
+routes.post('/files', upload.single('file'), FileController.store);
 
-routes.post("./files", upload.single("file"), FileController.store);
+// nodificação
+routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 export default routes;
