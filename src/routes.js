@@ -1,49 +1,38 @@
 import { Router } from 'express';
-
 import multer from 'multer';
-import multerConfig from './config/multer';
-
 import UserController from './app/controllers/UserController';
-import ProviderController from './app/controllers/ProviderController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
+import ProviderController from './app/controllers/ProviderController';
 import AppointmentController from './app/controllers/AppointmentController';
-import SheduleController from './app/controllers/SheduleController';
-import NotificationController from './app/controllers/NotificationController';
-
-import authMiddlewares from './app/middlewares/auth';
 import AvailableController from './app/controllers/AvailableController';
+import ScheduleController from './app/controllers/ScheduleController';
+import NotificationController from './app/controllers/NotificationController';
+import authMiddleware from './app/middlewares/auth';
+import multerConfig from './config/multer';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
-// sessions
-routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
+routes.post('/sessions', SessionController.store);
 
-// Router Authorization
-routes.use(authMiddlewares);
-
-// User
+// Todas as rotas que forem chamadas a partir daqui tem que ser autenticada
+routes.use(authMiddleware);
 routes.put('/users', UserController.update);
 
-// Providers
 routes.get('/providers', ProviderController.index);
 routes.get('/providers/:providerId/available', AvailableController.index);
 
-// Calendario
 routes.post('/appointments', AppointmentController.store);
 routes.get('/appointments', AppointmentController.index);
 routes.delete('/appointments/:id', AppointmentController.delete);
 
-// Calendario do prestador
-routes.get('/schedule', SheduleController.index);
+routes.get('/schedule', ScheduleController.index);
 
-// Foto
-routes.post('/files', upload.single('file'), FileController.store);
-
-// nodificação
 routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
+
+routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;

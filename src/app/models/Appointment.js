@@ -24,6 +24,7 @@ class Appointment extends Model {
         sequelize,
       }
     );
+
     return this;
   }
 

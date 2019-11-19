@@ -8,19 +8,19 @@ module.exports = {
         primaryKey: true,
       },
       date: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
       user_id: {
         type: Sequelize.INTEGER,
-        reference: { model: 'users', key: 'id' },
+        references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: true,
       },
       provider_id: {
         type: Sequelize.INTEGER,
-        reference: { model: 'users', key: 'id' },
+        references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: true,

@@ -3,6 +3,7 @@ import CancellationMail from '../app/jobs/CancellationMail';
 import redisConfig from '../config/redis';
 
 const jobs = [CancellationMail];
+
 class Queue {
   constructor() {
     this.queues = {};
@@ -33,7 +34,7 @@ class Queue {
   }
 
   handleFailure(job, err) {
-    console.log(job, err);
+    console.log(`Queue ${job.queue.name}: FAILED`, err);
   }
 }
 

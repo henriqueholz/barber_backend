@@ -3,9 +3,14 @@ import User from '../models/User';
 
 class NotificationController {
   async index(req, res) {
-    /* check if provider_id is a provider  */
+    /**
+     * Check if loggedUser is a provider
+     */
     const checkIsProvider = await User.findOne({
-      where: { id: req.userId, provider: true },
+      where: {
+        id: req.userId,
+        provider: true,
+      },
     });
 
     if (!checkIsProvider) {
@@ -17,17 +22,16 @@ class NotificationController {
     const notifications = await Notification.find({
       user: req.userId,
     })
-      .sort({ createAt: 'desc' })
+      .sort({ createdAt: 'desc' })
       .limit(20);
+
     return res.json(notifications);
   }
 
   async update(req, res) {
     const notification = await Notification.findByIdAndUpdate(
       req.params.id,
-      {
-        read: true,
-      },
+      { read: true },
       { new: true }
     );
 

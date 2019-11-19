@@ -20,7 +20,9 @@ class AvailableController {
 
     const searchDate = Number(date);
 
-    const appointment = await Appointment.finddAll({
+    // 2019-09-18 10:49:44
+
+    const appointments = await Appointment.findAll({
       where: {
         provider_id: req.params.providerId,
         canceled_at: null,
@@ -30,11 +32,11 @@ class AvailableController {
       },
     });
 
-    const shedule = [
-      '08:00',
-      '09:00',
-      '10:00',
-      '11:00',
+    const schedule = [
+      '08:00', // 2019-09-18 08:00:00
+      '09:00', // 2019-09-18 09:00:00
+      '10:00', // 2019-09-18 10:00:00
+      '11:00', // ...
       '12:00',
       '13:00',
       '14:00',
@@ -45,21 +47,24 @@ class AvailableController {
       '19:00',
     ];
 
-    const avaiable = shedule.map(time => {
+    const available = schedule.map(time => {
       const [hour, minute] = time.split(':');
       const value = setSeconds(
         setMinutes(setHours(searchDate, hour), minute),
         0
       );
+
       return {
         time,
+        // format to: 2019-09-18T15:40:44-04:00
         value: format(value, "yyyy-MM-dd'T'HH:mm:ssxxx"),
         available:
           isAfter(value, new Date()) &&
-          !appointment.find(a => format(a.date, 'HH:mm') === time),
+          !appointments.find(a => format(a.date, 'HH:mm') === time),
       };
     });
-    return res.json(avaiable);
+
+    return res.json(available);
   }
 }
 
